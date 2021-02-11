@@ -1,2 +1,5 @@
-
+# No subimos los modulos de node
 node_modules/
+
+# No subimos la carpeta de .vscode
+.vscode/
