@@ -3,3 +3,6 @@ node_modules/
 
 # No subimos la carpeta de .vscode
 .vscode/
+
+# No subimos el .env
+.env
