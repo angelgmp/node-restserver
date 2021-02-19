@@ -1,8 +1,26 @@
 // desestructuramos lo que viene de express
 // sacamos una funcion que se llama Router
 const { Router } = require( 'express' );
-
 const { check } = require('express-validator');
+
+/* const { validarCampos } = require('../middlewares/validar-campos');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { esAdminRol, tieneRol } = require('../middlewares/validar-roles'); */
+
+const {
+  validarCampos,
+  validarJWT,
+  esAdminRole,
+  tieneRol
+} = require('../middlewares');
+//Si pusiéramos:
+//  } = require('../middlewares/index.js');
+//sería lo mismo, pero no es necesario
+//ya que por defecto cuando apuntamos a la carpeta
+//se busca el index
+
+
+const { esRoleValido, emailExiste, existeUsuarioXId } = require('../helpers/db-validaciones');
 
 const { usuarioGet,
         usuarioPost,
@@ -11,9 +29,6 @@ const { usuarioGet,
         usuarioPatch 
 } = require('../controllers/usuario');
 
-const { validarCampos } = require('../middlewares/validar-campos');
-
-const { esRoleValido, emailExiste, existeUsuarioXId } = require('../helpers/db-validaciones');
 
 //Llamamos esa función que sacamos
 const router = Router();
@@ -109,6 +124,16 @@ router.put('/:id', [
 ], usuarioPut);
 
 router.delete('/:id', [
+  //Aquí mandamos la referencia a validarJWT
+  validarJWT,
+  //esAdminRol, 
+
+  //Aquí ejecuto la función, entonces, esta función tiene que regresar una función
+  //tieneRol( 'ADMIN_ROLE', 'VENTAS_ROLE', loquesea_ROLE),
+
+  //En la línea de arriba se mandan varios roles
+  //pero en realidad en este ejercicio, solo necesito ADMIN_ROLE
+  tieneRol( 'ADMIN_ROLE', 'OTRO_ROLE' ),
   check('id', 'No es un Id válido').isMongoId(),
   check('id').custom( existeUsuarioXId ),
   validarCampos

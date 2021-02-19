@@ -43,7 +43,8 @@ UsuarioSchema.methods.toJSON = function() {
     //es decir, de este modelo y queremos quitar para no regresarlo
     //entonces, quito __v y password
     //Usamos el operador rest para regresar todo los demás
-    const { __v, password, ...todoLoDemasDelUsuario } = this.toObject();
+    const { __v, password, _id, ...todoLoDemasDelUsuario } = this.toObject();
+    todoLoDemasDelUsuario.uid = _id;
     return todoLoDemasDelUsuario;
 }
 
