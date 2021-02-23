@@ -4,9 +4,72 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso denegado</title>
+    <title>Google Sign In</title>
+
+    <meta name="google-signin-client_id" content="864357239308-laobkfmspb27ab08dt61hcssb5thr43g.apps.googleusercontent.com">
 </head>
 <body>
-    <h1>Acceso Denegado</h1>
+    <h1>Google Sign-In</h1>
+    <hr>
+
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <br>
+    <a href="#" onclick="signOut();">Sign out</a>
+
+
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script>
+        console.log(window.location.hostname.includes('localhost'))
+
+        // Si me encuentro en local, la petición la servicio será a localhost
+        // en caso contrario, quiere decir que estaré en producción (heroku)
+        var  url = ( window.location.hostname.includes('localhost'))
+                        ? 'http://localhost:8080/apii/auth/google'
+                        : 'https://node-restserver-agmp.herokuapp.com/apii/auth/google'
+
+                        
+
+        function onSignIn(googleUser) {
+
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            //Genera el id_token de Google
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log( id_token )
+
+            //Hacemos la petición post al backend
+            const data = { id_token };
+
+            //si mandaramos algo diferente al toke, mandaría el error
+            //const data = { asd: 123 };
+
+            fetch( url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json' },
+                
+                //El body debe ir serializado
+                body: JSON.stringify( data )
+            })
+            //Si todo sale bien, la respuesta la convierto en Json
+            .then( resp => resp.json() )
+            //Si todo sale bien, lo imprimo en consola
+            .then( data => console.log( 'Mi servidor', data ))
+            //En caso de error, imprimo el error en consola
+            .catch( console.log );
+        }
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+    </script>
 </body>
 </html>
