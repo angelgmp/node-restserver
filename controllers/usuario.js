@@ -27,7 +27,7 @@ const usuario = require('../models/usuario');
   });
 } */
 
-const usuarioGet = async(req = request, res = response) => {
+const usuariosGet = async(req = request, res = response) => {
 
     //Desestructuramos lo que viene en la url
     //por defecto, es decir, si no viene ese limite, será de 3
@@ -201,7 +201,7 @@ const usuarioPatch = (req, res = response) => {
 
 
 module.exports = {
-    usuarioGet,
+    usuariosGet,
     usuarioPost,
     usuarioPut,
     usuarioDelete,

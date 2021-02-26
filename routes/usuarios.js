@@ -22,7 +22,7 @@ const {
 
 const { esRoleValido, emailExiste, existeUsuarioXId } = require('../helpers/db-validaciones');
 
-const { usuarioGet,
+const { usuariosGet,
         usuarioPost,
         usuarioPut,
         usuarioDelete,
@@ -67,7 +67,7 @@ router.patch('/', (req, res) => {
 
 //No se est´ejecutando usuarioGet, solo se está pasando la referencia
 //cuando se llame router.get, req y resp pasan a usuarioGet
-router.get('/', usuarioGet);
+router.get('/', usuariosGet);
 
 //Definomos un middleware para que primero realice las validaciones
 //y si todo està bien, entonces ahora si llamamos a la ruta
