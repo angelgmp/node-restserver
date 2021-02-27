@@ -2,6 +2,7 @@
 const validarCampos = require('../middlewares/validar-campos');
 const validarJWT = require('../middlewares/validar-jwt');
 const validaRoles = require('../middlewares/validar-roles');
+const validarArchivo = require('../middlewares/validar-archivo');
 
 //Operador spred (...)
 //Con el operador resto (...) exporto todo lo que exportan
@@ -10,5 +11,6 @@ const validaRoles = require('../middlewares/validar-roles');
 module.exports = {
     ...validarCampos,
     ...validarJWT,
-    ...validaRoles
+    ...validaRoles,
+    ...validarArchivo
 }

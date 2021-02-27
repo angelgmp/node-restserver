@@ -6,3 +6,8 @@ node_modules/
 
 # No subimos el .env
 .env
+
+# Ignoramos las imágenes subidas
+# ignoramos las imagenes de los productos
+uploads/productos/**.*
+uploads/usuarios/**.*

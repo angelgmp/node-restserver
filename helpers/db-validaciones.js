@@ -59,6 +59,24 @@ const productoExiste = async( nombre = '' ) => {
     }
 }
 
+/**
+ * Para validar las colecciones permitidas
+ * para eso de actualizar imágenes
+ */
+//Los argumentos coleccion y colecciones son opcionales, por eso el = y '' y []
+const coleccionesPermitidas = ( coleccion = '', colecciones = [] ) => {
+
+    //Validando que la colección esté incluida en las colecciones
+    const incluida = colecciones.includes( coleccion );
+    if( !incluida ) {
+        throw new Error( `La colección ${ coleccion } no es permitida, solo se permite: ${ colecciones }`);
+    }
+
+    //Si todo sale bien, regresa true
+    return true;
+}
+
+
  
 
 
@@ -69,5 +87,6 @@ module.exports = {
     existeUsuarioXId,
     existeCategoriaXId,
     existeProductoXId,
-    productoExiste
+    productoExiste,
+    coleccionesPermitidas
 }

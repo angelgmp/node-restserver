@@ -42,6 +42,10 @@ const ProductoSchema = Schema ({
 
     disponible: { type: Boolean, default: true },
 
+    img: {
+        type: String,
+    }
+
 });
 
 //Para no mostrar el __v que pone mongo y el estado, ya q ue siempre que regresaremos categorías con estado: true
