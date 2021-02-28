@@ -2,7 +2,7 @@ const { Router } = require( 'express' );
 const { check } = require('express-validator');
 
 const { validarCampos, validarArchivoSubir } = require('../middlewares');
-const { cargarArchivo, actualizarImagen, mostrarImagen } = require('../controllers/uploads');
+const { cargarArchivo, actualizarImagen, mostrarImagen, actualizarImagenCloudinary } = require('../controllers/uploads');
 
 const { coleccionesPermitidas } = require('../helpers');
 
@@ -19,7 +19,8 @@ router.put('/:coleccion/:id', [
     //Si necesitara más colecciones permitidas, solo necesito agregarlas aquí
     check('coleccion').custom( c => coleccionesPermitidas( c, ['usuarios', 'productos'])),
     validarCampos
-], actualizarImagen);
+//], actualizarImagen);
+], actualizarImagenCloudinary);
 
 //Para obtener la imagen
 router.get('/:coleccion/:id', [

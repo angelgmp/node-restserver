@@ -168,10 +168,90 @@ const mostrarImagen = async ( req, res = response ) => {
     res.sendFile( pathImagen );
 }
 
+/************************************************************/
+//Es asinc porque se necesitan hacer grabaciones a bd, y eso ya es asíncrono
+const actualizarImagenCloudinary = async ( req, res = response ) => {
+
+    console.log('pato');
+
+    console.log(`La imagen a actualizar: ${ req.files.archivo.name }`)
+
+    const { id, coleccion } = req.params;
+
+    console.log('colec:', coleccion);
+
+    let modelo;
+
+    switch ( coleccion ) {
+        case 'usuarios':
+            modelo = await Usuario.findById(id);
+            console.log(`El usuario es: ${ modelo }`);
+            if( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe el usuario con el id ${ id }`
+                });
+            }
+            break;
+
+        case 'productos':
+            modelo = await Producto.findById(id);
+            console.log(`El producto es: ${ modelo }`);
+            if( !modelo ) {
+                return res.status(400).json({
+                    msg: `No existe el producto con el id ${ id }, ZOQUETEEE!!`
+                });
+            }
+            break;
+    
+        default:
+            return res.status(500).json({ msg: 'Esta no está validada'});
+    }
+
+    //Borrar imágenes previas
+    if( modelo.img ) {
+ 
+        //De toda la url, obtengo la parte que tiene el nombre de la imagen
+        //en la url tengo, por ejemplo: https://res.cloudinary.com/dynwd07jq/image/upload/v1614541708/vwnsw4gwyjjsghc4fm5p.jpg
+        //ese v1614... es lo que me interesa 
+        const nombreArr = modelo.img.split('/');
+        
+        //Ahora de esa parte, le quito la extensión y me quedo con el nombre
+        const nombre = nombreArr[ nombreArr.length -1 ];
+
+        //Ahora necesito el nombre del archivo sin la extensión, le pondré public_id
+        const [ public_id ] = nombre.split('.');
+        console.log('public_id: ', public_id);
+ 
+        //Borramos la imagen de cloudinary
+        //No necesitamos esperar a que se borre, por eso no tiene await
+        cloudinary.uploader.destroy( public_id );
+    } 
+    console.log('Temp:', req.files.archivo );
+    
+    //El tempFilePath es lo que se le manda a cloudinary
+    const { tempFilePath } = req.files.archivo;
+    //Esto es de cloudinary, esto es una promesa
+    //Esto regresa todo el objeto, entre otras cosas, la ssecure_url
+    //const resp = await cloudinary.uploader.upload( tempFilePath )
+
+    //Solo me interesa el secure_url, de todo lo que regresa cloudinary
+    const { secure_url } = await cloudinary.uploader.upload( tempFilePath );
+    modelo.img = secure_url;
+
+    //Lo guardo en la bd
+    await modelo.save();
+
+    //res.json({ resp });
+
+    res.json({ modelo });
+     
+}
+/*************************************************************************** */
 
 
 module.exports = {
     cargarArchivo,
     actualizarImagen,
-    mostrarImagen
+    mostrarImagen,
+    actualizarImagenCloudinary
 }
